@@ -1,0 +1,121 @@
+//LDR sensor-------------------------------------
+
+
+int sensorReading = 0;   
+
+
+//LDR sensor-------------------------------------
+
+//Ultrasonic sensor-------------------------------------
+int inches = 0;
+int cm = 0;
+int triggerPin = 13;
+int echoPin = 12;
+int defult = 0;
+long readUltrasonicDistance(int triggerPin,int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  return pulseIn(echoPin, HIGH);
+}
+//Ultrasonic sensor-------------------------------------
+
+//Gas sensor-------------------------------------
+int adcPin = 0;
+int adcValue = 0;
+float v;
+float rs,ppm;
+
+
+int buttonState = 0;
+void setup() {
+  
+  //LDR sensor-------------------------------------
+  	pinMode(8, OUTPUT);
+ 	pinMode(A0, INPUT);
+  
+	Serial.begin(9600); 
+  //LDR sensor-------------------------------------
+  
+  //Ultrasonic sensor-------------------------------------
+    pinMode(2, OUTPUT);
+    cm = 0.01723*readUltrasonicDistance(triggerPin, echoPin);
+    defult = cm;
+ 	Serial.print(defult);
+  //Ultrasonic sensor-------------------------------------
+  //PIR sensor--------------------------------------------
+ 	 pinMode(3, INPUT);
+  	 pinMode(9, OUTPUT);
+  //PIR sensor--------------------------------------------
+  
+  //Motor------------------------------
+  
+  	pinMode(5, OUTPUT);
+  	pinMode(4, INPUT);
+  
+  //Motor------------------------------
+    pinMode(7, OUTPUT);
+    pinMode(A1, INPUT);
+}
+
+void loop() {//########################################################################
+ //LDR sensor-------------------------------------
+ 	sensorReading = analogRead(A0);
+  
+    if(sensorReading < 900){
+      digitalWrite(8, HIGH);
+    }else{
+      digitalWrite(8, LOW);
+    }  
+  //LDR sensor-------------------------------------
+  
+  //Ultrasonic sensor-------------------------------------
+    cm = 0.01723*readUltrasonicDistance(triggerPin, echoPin)   ;
+    if(cm < defult){
+        digitalWrite(2,HIGH);
+        delay(50);
+     	digitalWrite(2,LOW);        
+    }else{
+       digitalWrite(2,LOW);
+      
+    }
+  //Ultrasonic sensor-------------------------------------
+  
+  //PIR sensor----------------------------------
+  	int value = digitalRead(3);
+  	if (value == 1)
+  	{
+    	tone(9, 440, 1000);
+    }
+  //PIR sensor----------------------------------
+
+  //Motor---------------------------------------------
+  	buttonState = digitalRead(4);
+    if(buttonState == 1){
+    	digitalWrite(5,0);
+    }
+    else{
+      digitalWrite(5,HIGH);
+    }
+  //Motor---------------------------------------------
+  
+  //Gas sensor----------------------------------
+   int sensor_gas = analogRead(A1);
+  
+  if(sensor_gas >= 400){
+  	digitalWrite(7,HIGH);
+  }
+  else{
+    digitalWrite(7,LOW);
+  }
+     
+   
+  //-------------------------------------------
+
+  delay(1000);
+}	
